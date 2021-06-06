@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "matrix.fullname" . }}-registration
+  labels:
+{{ include "matrix.labels" . | indent 4 }}
+{{ include "matrix.element.labels" . | indent 4}}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "matrix.name" . }}-registration
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "matrix.name" . }}-registration
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      containers:
+        - name: "registration"
+          image: "zeratax/matrix-registration:v0.9.1"
+          command: ["matrix-registration"]
+          args: [
+            "--config-path",
+            "/data/config.yaml",
+            "serve"
+          ]
+          imagePullPolicy: {{ .Values.riot.image.pullPolicy }}
+          ports:
+            - name: registration
+              containerPort: 5000
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /data
+              name: data 
+              subPath: matrix-registration
+          securityContext:
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+          {{- with .Values.riot.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: app-data

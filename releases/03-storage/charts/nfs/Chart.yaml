@@ -1,0 +1,9 @@
+apiVersion: v1
+name: nfs
+home: https://github.com/aldenjenkins/home_charts/nfs
+version: 1.0.0
+appVersion: v1.23.2
+description: Persistent volume configs
+maintainers:
+  - name: Alden Jenkins
+    email: homecharts@aldenjenkins.com

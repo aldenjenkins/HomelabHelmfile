@@ -1,0 +1,28 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: {{ .Release.Name }}
+        image: quay.io/jenks/{{ .Release.Name }}
+        env:
+        - name: DATABASE_URL
+          value: {{ .Values.dbUrl }}
+        - name: GOOGLE_API_CREDENTIALS
+          value: {{ .Values.gCalSecret | toJson | quote }}
+        - name: NEXTAUTH_URL
+          value: 'https://{{ .Values.dnsName }}'
+        ports:
+        - containerPort: 3000
+          name: {{ .Release.Name }}-http

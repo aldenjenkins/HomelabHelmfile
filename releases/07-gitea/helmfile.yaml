@@ -1,0 +1,18 @@
+environments:
+  default:
+    values:
+    - "../values.yaml.gotmpl"
+
+releases:
+  - name: gitea
+    labels:
+      type: gitea
+    namespace: default
+    chart: charts/gitea
+    atomic: true
+    values:
+    - mariadb:
+        db:
+          password: {{ .Values.services.gitea.mariadb_password }}
+          host: {{ .Values.network.mysql.host }}
+      dnsName: {{ .Values.tls.cert.dnsNames.gitea }}

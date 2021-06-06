@@ -1,0 +1,93 @@
+---
+# Source: prometheus-mikrotik-exporter/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mikrotik-exporter
+  labels:
+    app.kubernetes.io/name: prometheus-mikrotik-exporter
+    app.kubernetes.io/instance: mikrotik-exporter
+    app.kubernetes.io/managed-by: Helm
+data:
+  mikrotik.yaml: |
+    devices:
+    - address: {{ .Values.address }}
+      name: gateway
+      password: {{ .Values.password }}
+      user: {{ .Values.username }}
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: mikrotik-exporter
+  labels:
+    app.kubernetes.io/name: prometheus-mikrotik-exporter
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 9436
+      protocol: TCP
+  selector:
+    app.kubernetes.io/name: prometheus-mikrotik-exporter
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mikrotik-exporter
+  labels:
+    app.kubernetes.io/name: prometheus-mikrotik-exporter
+    app.kubernetes.io/instance: mikrotik-exporter
+    app.kubernetes.io/managed-by: Helm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: prometheus-mikrotik-exporter
+      app.kubernetes.io/instance: mikrotik-exporter
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: prometheus-mikrotik-exporter
+        app.kubernetes.io/instance: mikrotik-exporter
+        app.kubernetes.io/managed-by: Helm
+      annotations:
+        prometheus.io/port: "9436"
+        prometheus.io/scrape: "true"
+    spec:
+      restartPolicy: Always
+      containers:
+        - name: mikrotik-exporter
+          image: "nshttpd/mikrotik-exporter:1.0.9"
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 1000
+          command: ["/app/mikrotik-exporter"]
+          args: ["-config-file", "/config/mikrotik.yaml"]
+          ports:
+            - containerPort: 9436
+              name: http
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+          volumeMounts:
+            - mountPath: /config
+              name: config
+      volumes:
+        - name: config
+          configMap:
+            name: mikrotik-exporter
+

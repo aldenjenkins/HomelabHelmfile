@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kanboard
+spec:
+  selector:
+    app: kanboard
+  ports:
+  - name: kanboard-http
+    port: 80
+  - name: kanboard-https
+    port: 443

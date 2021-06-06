@@ -1,0 +1,113 @@
+environments:
+  default:
+    values:
+      - "../values.yaml.gotmpl"
+---
+
+releases:
+  - name: jitsi-meet
+    chart: charts/jitsi-meet
+    atomic: true
+    values:
+      - jicofo:
+          userAuth:
+            enabled: true
+            name: "focus"
+            secret: {{ .Values.services.jitsi.jicofo.password }}
+          componentSecret: {{ .Values.services.jitsi.jicofo.password }}
+          environment:
+            - name: TZ
+              value: America/Chicago
+            - name: JVB_BREWERY_MUC
+              value: jvbbrewery
+            - name: XMPP_DOMAIN
+              value: meet.jitsi
+            - name: XMPP_AUTH_DOMAIN
+              value: auth.meet.jitsi
+            - name: XMPP_INTERNAL_MUC_DOMAIN
+              value: internal-muc.meet.jitsi
+            - name: PUBLIC_URL
+              value: "https://{{ .Values.tls.cert.dnsNames.jitsi }}"
+        jvb:
+          userAuth:
+            enabled: true
+            name: "jvb"
+            secret: {{ .Values.services.jitsi.jicofo.password }}
+          environment:
+            - name: TZ
+              value: America/Chicago
+            - name: JVB_BREWERY_MUC
+              value: jvbbrewery
+            - name: XMPP_DOMAIN
+              value: meet.jitsi
+            - name: XMPP_AUTH_DOMAIN
+              value: auth.meet.jitsi
+            - name: XMPP_MUC_DOMAIN
+              value: muc.meet.jitsi
+            - name: XMPP_INTERNAL_MUC_DOMAIN
+              value: internal-muc.meet.jitsi
+            - name: JVB_STUN_SERVERS
+              value: meet-jit-si-turnrelay.jitsi.net:443
+            - name: JVB_TCP_HARVESTER_DISABLED
+              value: "true"
+            - name: PUBLIC_URL
+              value: "https://{{ .Values.tls.cert.dnsNames.jitsi }}"
+            - name: DOCKER_HOST_ADDRESS
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+
+        prosody:
+          auth:
+            guest: 1
+          environment:
+            - name: JVB_TCP_HARVESTER_DISABLED
+              value: "true"
+            - name: TZ
+              value: America/Chicago
+            - name: JVB_BREWERY_MUC
+              value: jvbbrewery
+            - name: XMPP_DOMAIN
+              value: meet.jitsi
+            - name: XMPP_AUTH_DOMAIN
+              value: auth.meet.jitsi
+            - name: XMPP_INTERNAL_MUC_DOMAIN
+              value: internal-muc.meet.jitsi
+            - name: JVB_TCP_HARVESTER_DISABLED
+              value: "true"
+            - name: XMPP_MUC_DOMAIN
+              value: muc.meet.jitsi
+            - name: PUBLIC_URL
+              value: "https://{{ .Values.tls.cert.dnsNames.jitsi }}"
+
+        web:
+          ingress:
+            enabled: true
+            annotations:
+              kubernetes.io/ingress.class: "nginx"
+              nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+              cert-manager.io/cluster-issuer: "letsencrypt-cluster-issuer"
+            hosts:
+              - host: {{ .Values.tls.cert.dnsNames.jitsi }}
+                paths:
+                  - "/"
+            tls:
+              - hosts:
+                  - {{ .Values.tls.cert.dnsNames.jitsi }}
+                secretName: jitsi-cert-tls
+          environment:
+            - name: XMPP_DOMAIN
+              value: meet.jitsi
+            - name: XMPP_AUTH_DOMAIN
+              value: auth.meet.jitsi
+            - name: XMPP_INTERNAL_MUC_DOMAIN
+              value: internal-muc.meet.jitsi
+            - name: XMPP_MUC_DOMAIN
+              value: muc.meet.jitsi
+            - name: TZ
+              value: America/Chicago
+            - name: JVB_TCP_HARVESTER_DISABLED
+              value: "true"
+            - name: PUBLIC_URL
+              value: "https://{{ .Values.tls.cert.dnsNames.jitsi }}"
+

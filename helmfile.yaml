@@ -1,0 +1,29 @@
+helmfiles:
+  - "releases/00-flannel/helmfile.yaml"
+  - "releases/01-metallb/helmfile.yaml"
+  - "releases/02-external-dns/helmfile.yaml"
+  - "releases/03-storage/helmfile.yaml"
+  - "releases/04-ingress/helmfile.yaml"
+  - "releases/05-cert-manager/helmfile.yaml"
+  - "releases/06-certificates/helmfile.yaml"
+  - "releases/06-redis/helmfile.yaml"
+  - "releases/07-gitea/helmfile.yaml"
+  - "releases/08-heimdall/helmfile.yaml"
+  - "releases/09-librespeed/helmfile.yaml"
+  - "releases/11-jitsi/helmfile.yaml"
+  - "releases/15-kanboard/helmfile.yaml"
+  - "releases/16-freshrss/helmfile.yaml"
+  - "releases/17-jellyfin/helmfile.yaml"
+  - "releases/19-kubernetes-dashboard/helmfile.yaml"
+  - "releases/20-netdata/helmfile.yaml"
+  - "releases/21-monitoring/helmfile.yaml"
+  - "releases/22-organizer/helmfile.yaml"
+  - "releases/23-calendso/helmfile.yaml"
+  - "releases/24-authelia/helmfile.yaml"
+  - "releases/25-matrix/helmfile.yaml"
+  - "releases/26-bookstack/helmfile.yaml"
+  - "releases/27-netbox/helmfile.yaml"
+
+environments:
+  default: {}
+

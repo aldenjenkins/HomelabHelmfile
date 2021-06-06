@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "matrix.fullname" . }}-registration
+  labels:
+{{ include "matrix.labels" . | indent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: 5000
+      targetPort: registration
+      protocol: TCP
+      name: registration
+  selector:
+    app.kubernetes.io/name: {{ include "matrix.name" . }}-registration
+    app.kubernetes.io/instance: {{ .Release.Name }}

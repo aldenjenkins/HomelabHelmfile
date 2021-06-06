@@ -1,0 +1,7 @@
+releases:
+  - name: flannel
+    labels:
+      type: flannel
+    namespace: default
+    chart: charts/flannel
+    atomic: true

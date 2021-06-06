@@ -1,0 +1,60 @@
+repositories:
+  - name: bootc
+    url: https://charts.boo.tc
+
+environments:
+  default:
+    values:
+      - "../values.yaml.gotmpl"
+---
+
+releases:
+  - name: netbox
+    chart: bootc/netbox
+    atomic: true
+    timeout: 350
+    values:
+      - allowedHosts:
+          - {{ .Values.tls.cert.dnsNames.netbox }}
+        superuser:
+          email: {{ .Values.services.netbox.emailUsername }}
+          password: {{ .Values.services.netbox.superuserPassword }}
+          apiToken: {{ .Values.services.netbox.superuserApiToken }}
+        admins:
+          - ['Alden Jenkins', {{ .Values.services.netbox.emailUsername }}]
+        redis:
+          enabled: false
+        tasksRedis:
+          host: redis
+        email:
+          server: {{ .Values.email.host }}
+          port: 587
+          username: {{ .Values.services.netbox.emailUsername }}
+          password: {{ .Values.services.netbox.emailPassword }}
+          useTLS: true
+          from: {{ .Values.services.netbox.emailUsername }}
+        loginRequired: true
+        metricsEnabled: true
+        timeZone: {{ .Values.timeZone }}
+        postgresql:
+          enabled: false
+        externalDatabase:
+          host: {{ .Values.network.postgres.host }}
+          password: {{ .Values.services.netbox.dbPassword }}
+        persistence:
+          existingClaim: media
+          subPath: netbox/media
+        reportsPersistence:
+          enabled: true
+          existingClaim: app-data
+          subPath: netbox/reports
+        ingress:
+          enabled: true
+          hosts:
+            - host: {{ .Values.tls.cert.dnsNames.netbox }}
+              paths:
+                - /
+          tls:
+            - hosts:
+              - {{ .Values.tls.cert.dnsNames.netbox }}
+              secretName: netbox-cert-tls

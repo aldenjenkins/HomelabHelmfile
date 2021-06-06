@@ -1,0 +1,7 @@
+releases:
+  - name: heimdall
+    labels:
+      type: heimdall
+    namespace: default
+    chart: charts/heimdall
+    atomic: true

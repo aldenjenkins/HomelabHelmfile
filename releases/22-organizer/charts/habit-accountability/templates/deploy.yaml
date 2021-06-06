@@ -1,0 +1,35 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: {{ .Release.Name }}
+        image: quay.io/jenks/{{ .Release.Name }}
+        command: [
+          "gunicorn",
+        ]
+        args: [
+          "--bind", "0.0.0.0:80",
+          "habits.wsgi"
+        ]
+        env:
+        - name: DB_PASSWORD
+          value: {{ .Values.dbPassword }}
+        - name: DB_HOST
+          value: {{ .Values.dbHost }}
+        - name: SECRET_KEY
+          value: {{ .Values.secretKey }}
+        ports:
+        - containerPort: 80
+          name: habits-http

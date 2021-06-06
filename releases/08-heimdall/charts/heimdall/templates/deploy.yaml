@@ -1,0 +1,41 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: heimdall
+  annotations:
+    fluxcd.io/automated: 'true'
+    fluxcd.io/tag.heimdall: 'regex:^2\.[0-9\.]+-ls[0-9]+$'
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: heimdall
+  template:
+    metadata:
+      labels:
+        app: heimdall
+    spec:
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: app-data
+      containers:
+      - name: heimdall
+        image: linuxserver/heimdall:2.2.2-ls94
+        volumeMounts:
+        - name: config
+          mountPath: /config
+          subPath: heimdall
+        env:
+        - name: PUID
+          value: '1001'
+        - name: PGID
+          value: '1001'
+        - name: TZ
+          value: 'America/New_York'
+        ports:
+        - containerPort: 80
+          name: heimdall-http
+        - containerPort: 443
+          name: heimdall-https

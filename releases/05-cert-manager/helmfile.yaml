@@ -1,0 +1,42 @@
+repositories:
+  - name: jetstack
+    url: https://charts.jetstack.io
+
+environments:
+  default:
+    values:
+    - "../values.yaml.gotmpl"
+
+releases:
+  - name: cert-manager
+    namespace: cert-manager
+    createNamespace: true
+    labels:
+      type: cert-manager
+      app: cert-manager
+    chart: jetstack/cert-manager
+    wait: true
+    values:
+      - webhook:
+          timeoutSeconds: 30
+        installCRDs: true
+        extraArgs:
+          - --default-issuer-name=letsencrypt-cluster-issuer
+          - --default-issuer-kind=ClusterIssuer
+  - name: letsencrypt-cluster-issuer
+    namespace: cert-manager
+    labels:
+      type: cert-manager
+      app: cluster-issuer
+    createNamespace: true
+    wait: true
+    needs:
+    - cert-manager/cert-manager
+    chart: charts/cluster-issuer
+    values:
+      - tls:
+          acme:
+            email: {{ .Values.tls.acme.email | quote }}
+          cloudflare:
+            email: {{ .Values.tls.cloudflare.email | quote }}
+            api_key: {{ .Values.tls.cloudflare.api_key | quote }}

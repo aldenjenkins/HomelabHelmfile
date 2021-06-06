@@ -1,0 +1,43 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: freshrss
+  annotations:
+    fluxcd.io/automated: 'true'
+    fluxcd.io/tag.freshrss: 'regex:^2\.[0-9\.]+-ls[0-9]+$'
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: freshrss
+  template:
+    metadata:
+      labels:
+        app: freshrss
+    spec:
+      volumes:
+      - name: data-and-extensions
+        persistentVolumeClaim:
+          claimName: app-data
+      containers:
+      - name: freshrss
+        image: linuxserver/freshrss
+        volumeMounts:
+        - name: data-and-extensions
+          mountPath: /config/www/freshrss
+          subPath: freshrss
+        env:
+        - name: PUID
+          value: '1000'
+        - name: PGID
+          value: '1000'
+        - name: TZ
+          value: 'America/Denver'
+        - name: CRON_MIN
+          value: '*/20'
+        ports:
+        - containerPort: 80
+          name: freshrss-http
+        - containerPort: 443
+          name: freshrss-https

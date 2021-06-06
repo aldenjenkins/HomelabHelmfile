@@ -1,0 +1,15 @@
+environments:
+  default:
+    values:
+      - "../values.yaml.gotmpl"
+
+releases:
+  - name: freshrss
+    labels:
+      type: freshrss
+    namespace: default
+    chart: charts/freshrss
+    atomic: true
+    values:
+      - dnsName: {{ .Values.tls.cert.dnsNames.freshrss }}
+

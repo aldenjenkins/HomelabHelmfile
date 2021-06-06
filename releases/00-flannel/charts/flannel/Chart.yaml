@@ -1,0 +1,9 @@
+apiVersion: v1
+name: flannel
+home: https://github.com/aldenjenkins/home_charts/flannel
+version: 1.0.0
+appVersion: v1.0.0
+description: Flanneld binary for each host
+maintainers:
+  - name: Alden Jenkins
+    email: home_charts@aldenjenkins.com

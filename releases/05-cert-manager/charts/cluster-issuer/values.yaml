@@ -1,0 +1,8 @@
+tls:
+  cert:
+    dnsName: "example.com"
+  acme:
+    email: "email@email.com"
+  cloudflare:
+    email: "email@email.com"
+    api_key: "tokenValue"

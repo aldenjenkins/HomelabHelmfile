@@ -1,0 +1,22 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: external-dns-a-record-sync
+spec:
+  schedule: "*/1 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          nodeSelector:
+            kubernetes.io/hostname: kubemaster
+          containers:
+          - name: external-dns-a-record-sync
+            image: quay.io/jenks/metallb-external-dns-updater
+            imagePullPolicy: IfNotPresent
+            env:
+              - name: CF_API_KEY
+                value: {{ .Values.apiKey }}
+              - name: CF_API_EMAIL
+                value: {{ .Values.apiEmail }}
+          restartPolicy: OnFailure

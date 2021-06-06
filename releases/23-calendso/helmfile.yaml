@@ -1,0 +1,16 @@
+environments:
+  default:
+    values:
+      - "../values.yaml.gotmpl"
+---
+
+releases:
+  - name: calendso
+    labels:
+      type: calendso
+    chart: charts/calendso
+    atomic: true
+    values:
+      - dbUrl: {{ .Environment.Values.services.calendso.dbUrl }}
+        dnsName: {{ .Environment.Values.tls.cert.dnsNames.calendso }}
+        gCalSecret: {{ .Environment.Values.services.calendso.gCalSecret }}

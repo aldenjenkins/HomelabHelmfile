@@ -1,0 +1,14 @@
+{{- range $key, $value := .Values.tls.cert.dnsNames }}{{ if $value }}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ $key }}-cert
+spec:
+  dnsNames:
+    - {{ $value | quote }}
+  secretName: {{ $key }}-cert-tls
+  issuerRef:
+    name: letsencrypt-cluster-issuer
+    kind: ClusterIssuer
+{{- end }}{{- end }}

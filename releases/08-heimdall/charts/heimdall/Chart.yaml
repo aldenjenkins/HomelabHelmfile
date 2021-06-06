@@ -1,0 +1,9 @@
+apiVersion: v1
+name: heimdall
+home: https://github.com/aldenjenkins/home_charts/netdata
+version: 2.0.4
+appVersion: v1.23.2
+description: Real-time performance monitoring, done right! https://my-netdata.io/
+maintainers:
+  - name: Alden Jenkins
+    email: home_charts@aldenjenkins.com

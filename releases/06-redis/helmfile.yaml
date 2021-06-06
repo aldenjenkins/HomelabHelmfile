@@ -1,0 +1,10 @@
+environments:
+  default:
+    values:
+      - "../values.yaml.gotmpl"
+---
+
+releases:
+  - name: redis
+    chart: ./charts/redis
+    atomic: true

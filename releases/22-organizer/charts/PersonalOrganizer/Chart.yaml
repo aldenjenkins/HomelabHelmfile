@@ -1,0 +1,9 @@
+apiVersion: v1
+name: PersonalOrganizer
+home: https://github.com/aldenjenkins/home_charts/PersonalOrganizer
+version: 1.0.0
+appVersion: v1.0.0
+description: Tracking todos and journals
+maintainers:
+  - name: Alden Jenkins
+    email: home_charts@aldenjenkins.com

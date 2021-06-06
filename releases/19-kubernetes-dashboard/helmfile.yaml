@@ -1,0 +1,50 @@
+environments:
+  default:
+    values:
+      - "./values.yaml"
+
+repositories:
+# Stable repo of official helm charts
+- name: "kubernetes-dashboard"
+  url: "https://kubernetes.github.io/dashboard/"
+
+releases:
+- name: "kubernetes-dashboard"
+  namespace: "kube-system"
+  labels:
+    chart: "kubernetes-dashboard"
+    repo: "stable"
+    component: "monitoring"
+    namespace: "kube-system"
+    vendor: "kubernetes"
+  chart: "kubernetes-dashboard/kubernetes-dashboard"
+  wait: true
+  timeout: 180
+  values:
+    - replicaCount: {{ .Values.replica_count }}
+      metricsScraper:
+        enabled: true
+      resources:
+        limits:
+          cpu: {{ .Values.limit_cpu | quote }}
+          memory: {{ .Values.limit_memory | quote }}
+        requests:
+          cpu: {{ .Values.request_cpu | quote }}
+          memory: {{ .Values.request_memory | quote }}
+      rbac:
+        create: {{ .Values.rbac_enabled }}
+      serviceAccount:
+        create: {{ .Values.rbac_enabled }}
+        name: {{ .Values.service_account_name | quote }}
+      ingress:
+        enabled: {{ .Values.ingress_enabled }}
+        annotations:
+          kubernetes.io/ingress.class: {{ .Values.ingress_class | quote }}
+          nginx.ingress.kubernetes.io/secure-backends: "true"
+          kubernetes.io/tls-acme: {{ .Values.ingress_use_kube_lego | quote }}
+        hosts:
+        - {{ .Values.ingress_host | quote }}
+        tls:
+        - secretName: kube-dashboard-cert-tls
+          hosts:
+          - {{ .Values.ingress_host | quote }}

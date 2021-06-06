@@ -1,0 +1,68 @@
+environments:
+  default:
+    values:
+      - "../values.yaml.gotmpl"
+---
+
+releases:
+  - name: matrix
+    chart: ./charts/matrix
+    atomic: true
+    values:
+      - jitsiDomain: {{ .Values.tls.cert.dnsNames.jitsi }}
+        matrix:
+          serverName: {{ .Values.rootDomain }}
+          hostname: {{ .Values.tls.cert.dnsNames.matrix }}
+          encryptByDefault: all
+          adminEmail: {{ .Values.services.matrix.adminEmail }}
+          registration:
+            enabled: false
+            sharedSecret: {{ .Values.services.matrix.registrationSharedSecret }}
+        postgresql:
+          enabled: false
+          password: {{ .Values.services.matrix.postgresPassword }}
+          hostname: {{ .Values.network.postgres.host }}
+        ingress:
+          enabled: true
+          annotations:
+            kubernetes.io/ingress.class: nginx
+            external-dns.alpha.kubernetes.io/hostname: "{{ .Values.tls.cert.dnsNames.matrix }},{{ .Values.tls.cert.dnsNames.element }},{{ .Values.tls.cert.dnsNames.federation }}"
+            cert-manager.io/cluster-issuer: letsencrypt-cluster-issuer
+          hosts:
+            synapse: {{ .Values.tls.cert.dnsNames.matrix }}
+            riot: {{ .Values.tls.cert.dnsNames.element }}
+            federation: {{ .Values.tls.cert.dnsNames.matrix }}
+          tls:
+          - hosts:
+            - {{ .Values.tls.cert.dnsNames.matrix }}
+            secretName: matrix-cert-tls
+          - hosts:
+            - {{ .Values.tls.cert.dnsNames.element }}
+            secretName: element-cert-tls
+        synapse:
+          image:
+            repository: "matrixdotorg/synapse"
+            tag: v1.34.0
+        riot:
+          image:
+            repository: "vectorim/riot-web"
+            tag: v1.7.29
+        coturn:
+          service:
+            type: NodePort
+          kind: Deployment
+          image:
+            repository: "instrumentisto/coturn"
+            tag: "4.5.1.3"
+        mail:
+          enabled: true
+          from: {{ .Values.services.matrix.fromEmail }}
+          relay:
+            enabled: false
+          external:
+            host: {{ .Values.emailHost }}
+            port: 587
+            username: {{ .Values.services.matrix.fromEmail }}
+            password: {{ .Values.services.matrix.fromEmailPassword }}
+        networkPolicies:
+          enabled: false

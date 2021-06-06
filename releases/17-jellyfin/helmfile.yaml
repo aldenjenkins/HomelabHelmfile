@@ -1,0 +1,14 @@
+environments:
+  default:
+    values:
+      - "../values.yaml.gotmpl"
+
+releases:
+  - name: jellyfin
+    labels:
+      type: jellyfin
+    namespace: default
+    chart: charts/jellyfin
+    atomic: true
+    values:
+      - dnsName: {{ .Values.tls.cert.dnsNames.jellyfin }}

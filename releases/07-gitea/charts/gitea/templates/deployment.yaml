@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gitea
+  labels:
+    app: gitea
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gitea
+  template:
+    metadata:
+      labels:
+        app: gitea
+    spec:
+      containers:
+      - name: memcached
+        image: "memcached:1.5.19-alpine"
+        imagePullPolicy: IfNotPresent
+        command:
+          - memcached
+          - -m 64
+          - -o
+          - modern
+          - -v
+        ports:
+        - name: memcache
+          containerPort: 11211
+        livenessProbe:
+          tcpSocket:
+            port: memcache
+          initialDelaySeconds: 30
+          timeoutSeconds: 5
+        readinessProbe:
+          tcpSocket:
+            port: memcache
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+        securityContext:
+          runAsUser: 1000
+      - name: gitea
+        image: "gitea/gitea:1.11.5"
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: DATABASE_PASSWORD
+          value: {{ .Values.mariadb.db.password }}
+        ports:
+        - name: ssh
+          containerPort: 22
+        - name: http
+          containerPort: 3000
+        livenessProbe:
+          tcpSocket:
+            port: http
+          initialDelaySeconds: 23
+          timeoutSeconds: 1
+          periodSeconds: 10
+          successThreshold: 1
+          failureThreshold: 10
+        readinessProbe:
+          tcpSocket:
+            port: http
+          initialDelaySeconds: 20
+          periodSeconds: 10
+          successThreshold: 1
+          failureThreshold: 3
+        volumeMounts:
+        - name: gitea-data
+          mountPath: /data
+          subPath: gitea/data
+        - name: gitea-config
+          mountPath: /etc/gitea
+      volumes:
+      - name: gitea-data
+        persistentVolumeClaim:
+         claimName: app-data
+      - name: gitea-config
+        configMap:
+          name: gitea

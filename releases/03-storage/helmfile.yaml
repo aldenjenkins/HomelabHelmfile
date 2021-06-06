@@ -1,0 +1,27 @@
+repositories:
+- name: nfs-subdir-external-provisioner
+  url: https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner/
+  
+environments:
+  default:
+    values:
+      - "../values.yaml.gotmpl"
+
+releases:
+  - name: nfs-provisioner
+    labels:
+      type: nfs-provisioner
+    namespace: default
+    chart: nfs-subdir-external-provisioner/nfs-subdir-external-provisioner
+    atomic: true
+    values:
+    - nfs:
+        server: {{ .Values.network.nfs.host }}
+        path: "/mnt/data/share/kubedata"
+  - name: nfs-mounts
+    labels:
+      type: nfs-mounts
+    namespace: default
+    chart: charts/nfs
+    atomic: true
+

@@ -1,0 +1,31 @@
+environments:
+  default:
+    values:
+      - "../values.yaml.gotmpl"
+
+repositories:
+  - name: bitnami
+    url: https://charts.bitnami.com/bitnami
+
+releases:
+  - name: external-dns-cloudflare
+    chart: bitnami/external-dns
+    namespace: external-dns-cloudflare
+    atomic: true
+    values:
+      - rbac:
+          create: true
+        sources: [ingress]
+        policy: "create-only"
+        provider: cloudflare
+        cloudflare:
+          apiKey: {{ .Values.tls.cloudflare.api_key }}
+          email: {{ .Values.tls.cloudflare.email }}
+          proxied: true
+  - name: metallb-external-dns-updater
+    chart: charts/metallb-external-dns-updater
+    namespace: external-dns-cloudflare
+    atomic: true
+    values:
+      - apiKey: {{ .Values.tls.cloudflare.api_key }}
+        apiEmail: {{ .Values.tls.cloudflare.email }}

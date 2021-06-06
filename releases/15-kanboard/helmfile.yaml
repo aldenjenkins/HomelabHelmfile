@@ -1,0 +1,15 @@
+environments:
+  default:
+    values:
+    - "../values.yaml.gotmpl"
+
+releases:
+  - name: kanboard
+    labels:
+      type: kanboard
+    namespace: default
+    chart: charts/kanboard
+    atomic: true
+    values:
+    - mariadb_url_with_creds: {{ .Values.services.kanboard.mariadb_url_with_creds }}
+      dnsName: {{ .Values.tls.cert.dnsNames.kanboard }}

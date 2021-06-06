@@ -1,0 +1,45 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kanboard
+  annotations:
+    fluxcd.io/automated: 'true'
+    fluxcd.io/tag.kanboard: 'regex:^2\.[0-9\.]+-ls[0-9]+$'
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kanboard
+  template:
+    metadata:
+      labels:
+        app: kanboard
+    spec:
+      volumes:
+      - name: appdata
+        persistentVolumeClaim:
+          claimName: app-data
+      containers:
+      - name: kanboard
+        image: kanboard/kanboard:latest
+        volumeMounts:
+        - name: appdata
+          mountPath: /var/www/app/data
+          subPath: kanboard/data
+        - name: appdata
+          mountPath: /var/www/app/plugins
+          subPath: kanboard/plugins
+        - name: appdata
+          mountPath: /etc/nginx/ssl
+          subPath: kanboard/ssl
+        env:
+        - name: DEBUG
+          value: 'true'
+        - name: DATABASE_URL
+          value: {{ .Values.mariadb_url_with_creds }}
+        ports:
+        - containerPort: 80
+          name: kanboard-http
+        - containerPort: 443
+          name: kanboard-https

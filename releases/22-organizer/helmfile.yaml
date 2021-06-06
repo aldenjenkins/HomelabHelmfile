@@ -1,0 +1,28 @@
+environments:
+  default:
+    values:
+      - "../values.yaml.gotmpl"
+
+releases:
+  - name: organizer
+    labels:
+      type: organizer
+    namespace: default
+    chart: charts/PersonalOrganizer
+    atomic: true
+    values:
+    - dbHost: {{ .Values.network.postgres.host }}
+      dbPassword: {{ .Values.services.organizer.dbPassword }}
+      dnsName: {{ .Values.tls.cert.dnsNames.organizer }}
+      secretKey: {{ .Values.services.organizer.secretKey }}
+  - name: habit-accountability
+    labels:
+      type: habit-accountability
+    namespace: default
+    chart: charts/habit-accountability
+    atomic: true
+    values:
+    - dbHost: {{ .Values.network.postgres.host }}
+      dbPassword: {{ index .Values.services "habit-accountability" "dbPassword" }}
+      dnsName: {{ index .Values.tls.cert.dnsNames "habit-accountability" }}
+      secretKey: {{ index .Values.services "habit-accountability" "secretKey" }}

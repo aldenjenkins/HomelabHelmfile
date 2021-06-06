@@ -1,0 +1,14 @@
+environments:
+  default:
+    values:
+      - "../values.yaml.gotmpl"
+
+releases:
+  - name: librespeed
+    labels:
+      type: librespeed
+    namespace: default
+    chart: charts/librespeed
+    atomic: true
+    values:
+      - dnsName: {{ .Values.tls.cert.dnsNames.librespeed }}

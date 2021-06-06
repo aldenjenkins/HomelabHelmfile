@@ -1,0 +1,9 @@
+name: external-dns-metallb
+version: 1.0.0
+appVersion: 1.0.0
+description: Use external-dns TXT records in Cloudflare to create corresponding WAN addressed A records to bypass default LAN IP allocation
+sources:
+  - https://github.com/aldenjenkins/external-dns-metallb
+maintainers:
+  - name: Alden Jenkins
+    email: github@aldenjenkins.com

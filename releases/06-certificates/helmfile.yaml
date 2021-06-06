@@ -1,0 +1,13 @@
+environments:
+  default:
+    values:
+    - "../values.yaml.gotmpl"
+
+releases:
+  - name: letsencrypt-certificate
+    labels:
+      type: cert-manager
+      app: certificate
+    chart: charts/certificates
+    values:
+      - "../values.yaml.gotmpl"

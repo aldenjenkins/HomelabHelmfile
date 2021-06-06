@@ -1,0 +1,9 @@
+apiVersion: v1
+name: habit-accountability
+home: https://github.com/aldenjenkins/home_charts/habit-accountability
+version: 1.0.0
+appVersion: v1.0.0
+description: Tracking habits
+maintainers:
+  - name: Alden Jenkins
+    email: home_charts@aldenjenkins.com

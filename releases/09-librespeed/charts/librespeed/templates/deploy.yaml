@@ -1,0 +1,41 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: librespeed
+  annotations:
+    fluxcd.io/automated: 'true'
+    fluxcd.io/tag.librespeed: 'regex:^2\.[0-9\.]+-ls[0-9]+$'
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: librespeed
+  template:
+    metadata:
+      labels:
+        app: librespeed
+    spec:
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: media
+      containers:
+      - name: librespeed
+        image: linuxserver/librespeed
+        volumeMounts:
+        - name: config
+          mountPath: /config
+          subPath: librespeed
+        env:
+        - name: PUID
+          value: '1000'
+        - name: PGID
+          value: '1000'
+        - name: TZ
+          value: 'America/New_York'
+        ports:
+        - containerPort: 80
+          name: libspeed-http
+        - containerPort: 443
+          name: libspeed-https

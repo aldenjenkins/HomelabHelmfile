@@ -1,0 +1,32 @@
+{{- if .Values.coturn.enabled }}
+{{- $portRange := untilStep (int .Values.coturn.ports.from) (int (add1 .Values.coturn.ports.to)) 1 -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "matrix.fullname" . }}-coturn
+  labels:
+{{ include "matrix.labels" . | indent 4 }}
+{{ include "matrix.coturn.labels" . | indent 4}}
+spec:
+  type: {{ .Values.coturn.service.type }}
+  ports:
+    - port: 3478
+      targetPort: turn-3478
+      {{- if eq .Values.coturn.service.type "NodePort" }}
+      nodePort: 30478
+      {{- end }}
+      protocol: UDP
+      name: turn-3478
+    {{- range $index, $port := $portRange }}
+    - port: {{ $port }}
+      targetPort: {{ $port }}
+      {{- if eq $.Values.coturn.service.type "NodePort" }}
+      nodePort: {{ add 30400 ( int $index ) }}
+      {{- end }}
+      protocol: UDP
+      name: turn-{{ $port }}
+    {{- end }}
+  selector:
+    app.kubernetes.io/name: {{ include "matrix.name" . }}-coturn
+    app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}

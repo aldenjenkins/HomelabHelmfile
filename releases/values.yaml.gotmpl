@@ -1,0 +1,88 @@
+rootDomain: {{ requiredEnv "ROOT_DOMAIN" }}
+timeZone: {{ requiredEnv "KUBE_TIMEZONE" }}
+email:
+  host: {{ requiredEnv "EMAIL_HOST" }}
+network:
+  nfs:
+    host: "{{ requiredEnv "NFS_HOST" }}"
+  mysql:
+    host: "{{ requiredEnv "MYSQL_EXPORTER_HOST" }}"
+    password: "{{ requiredEnv "MYSQL_EXPORTER_PASSWORD" }}"
+  postgres:
+    host: "{{ requiredEnv "POSTGRES_EXPORTER_HOST" }}"
+    password: "{{ requiredEnv "POSTGRES_EXPORTER_PASSWORD" }}"
+  mikrotik:
+    address: "{{ requiredEnv "MIKROTIK_ADDRESS" }}"
+    username: "{{ requiredEnv "MIKROTIK_USERNAME" }}"
+    password: "{{ requiredEnv "MIKROTIK_PASSWORD" }}"
+  metallb:
+    default_range:
+      start: "{{ requiredEnv "METALLB_START_ADDRESS" }}"
+      end: "{{ requiredEnv "METALLB_END_ADDRESS" }}"
+  ingress:
+    loadBalancerIP: "{{ requiredEnv "LOADBALANCER_LAN_IP" }}" 
+services:
+  metallb:
+    speakerSecret: "{{ requiredEnv "METALLB_SPEAKER_SECRET" }}"
+  kanboard:
+    mariadb_url_with_creds: "{{ requiredEnv "KANBOARD_MARIADB_ADDRESS_WITH_PASS" }}"
+  gitea:
+    mariadb_password: "{{ requiredEnv "GITEA_MARIADB_PASSWORD" }}"
+  organizer:
+    dbPassword: "{{ requiredEnv "ORGANIZER_DB_PASSWORD" }}"
+    secretKey: "{{ requiredEnv "ORGANIZER_SECRET_KEY" }}"
+  habit-accountability:
+    dbPassword: "{{ requiredEnv "HABITS_DB_PASSWORD" }}"
+    secretKey: "{{ requiredEnv "HABITS_SECRET_KEY" }}"
+  calendso:
+    dbUrl: "{{ requiredEnv "CALENDSO_DATABASE_URL" }}"
+    gCalSecret: |
+      {{ requiredEnv "CALENDSO_GCAL_SECRET" }}
+  jitsi:
+    jicofo:
+      password: {{ requiredEnv "JITSI_JICOFO_PASSWORD" }}
+    jvb:
+      password: {{ requiredEnv "JITSI_JVB_PASSWORD" }}
+  searx:
+    mortyKey: {{ requiredEnv "SEARX_MORTY_KEY" | b64enc }}
+  authelia:
+    dbPass: {{ requiredEnv "AUTHELIA_DB_PASS" }}
+    subdomain: {{ requiredEnv "AUTHELIA_SUBDOMAIN" }}
+  matrix:
+    adminEmail: {{ requiredEnv "MATRIX_ADMIN_EMAIL" }}
+    postgresPassword: {{ requiredEnv "MATRIX_POSTGRES_PASSWORD" }}
+    fromEmail: {{ requiredEnv "MATRIX_FROM_EMAIL" }}
+    fromEmailPassword: {{ requiredEnv "MATRIX_FROM_EMAIL_PASSWORD" }}
+    registrationSharedSecret: {{ requiredEnv "MATRIX_REGISTRATION_SHARED_SECRET" }}
+  netbox:
+    emailUsername: {{ requiredEnv "NETBOX_EMAIL_USERNAME" }}
+    emailPassword: {{ requiredEnv "NETBOX_EMAIL_PASSWORD" }}
+    dbPassword: {{ requiredEnv "NETBOX_DB_PASSWORD" }}
+    superuserPassword: {{ requiredEnv "NETBOX_SUPERUSER_PASSWORD" }}
+    superuserApiToken: {{ requiredEnv "NETBOX_SUPERUSER_APITOKEN" }}
+tls:
+  acme:
+    email: "{{ requiredEnv "LETSENCRYPT_EMAIL" }}"
+  issuer:
+    name: "letsencrypt-prod"
+  cert:
+    dnsNames:
+      gitea: "{{ requiredEnv "GITEA_DNS_NAME" }}"
+      kanboard: "{{ requiredEnv "KANBOARD_DNS_NAME" }}"
+      kube-dashboard: "{{ requiredEnv "KUBEDASHBOARD_DNS_NAME" }}"
+      jellyfin: "{{ requiredEnv "JELLYFIN_DNS_NAME" }}"
+      librespeed: "{{ requiredEnv "LIBRESPEED_DNS_NAME" }}"
+      jitsi: "{{ requiredEnv "JITSI_DNS_NAME" }}"
+      freshrss: "{{ requiredEnv "FRESHRSS_DNS_NAME" }}"
+      habit-accountability: "{{ requiredEnv "HABITS_DNS_NAME" }}"
+      organizer: "{{ requiredEnv "ORGANIZER_DNS_NAME" }}"
+      calendso: "{{ requiredEnv "CALENDSO_DNS_NAME" }}"
+      searx: "{{ requiredEnv "SEARX_DNS_NAME" }}"
+      authelia: "{{ requiredEnv "AUTHELIA_DNS_NAME" }}"
+      matrix: "{{ requiredEnv "MATRIX_DNS_NAME" }}"
+      element: "{{ requiredEnv "ELEMENT_DNS_NAME" }}"
+      federation: "{{ requiredEnv "FEDERATION_DNS_NAME" }}"
+      netbox: "{{ requiredEnv "NETBOX_DNS_NAME" }}"
+  cloudflare:
+    email: "{{ requiredEnv "CLOUDFLARE_EMAIL" }}"
+    api_key: "{{ requiredEnv "CLOUDFLARE_KEY" }}"

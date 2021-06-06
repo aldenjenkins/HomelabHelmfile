@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: default-media
+  namespace: default
+  labels:
+    name: default-media
+spec:
+  capacity:
+    storage: 1Pi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    server: {{ .Values.nfsHost }}
+    path: "/mnt/data/share/kubedata/media"
+  mountOptions:
+    - nfsvers=4.1
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: app-data
+  namespace: default
+  labels:
+    name: app-data
+spec:
+  capacity:
+    storage: 1Pi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    server: {{ .Values.nfsHost }}
+    path: "/mnt/data/share/kubedata/appdata"
+  mountOptions:
+    - nfsvers=4.1
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: monitoring-data
+  namespace: default
+  labels:
+    name: monitoring-data
+spec:
+  capacity:
+    storage: 1Pi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    server: {{ .Values.nfsHost }}
+    path: "/mnt/data/share/kubedata/monitoring"
+  mountOptions:
+    - nfsvers=4.1

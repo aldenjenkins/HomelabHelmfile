@@ -1,0 +1,32 @@
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cloudflare-api-key-secret
+  namespace: cert-manager
+type: Opaque
+data:
+  api-key: {{ .Values.tls.cloudflare.api_key | b64enc }}
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-cluster-issuer
+  namespace: cert-manager
+spec:
+  acme:
+    # The ACME server URL
+    server: "https://acme-v02.api.letsencrypt.org/directory"
+    # Email address used for ACME registration
+    email: {{ .Values.tls.acme.email | quote }}
+    # Name of a secret used to store the ACME account private key
+    privateKeySecretRef:
+      name: letsencrypt-cluster-issuer-key
+    # Enable the HTTP-01 challenge provider
+    solvers:
+      - dns01:
+          cloudflare:
+            email: {{ .Values.tls.cloudflare.email | quote }}
+            apiKeySecretRef:
+              name: cloudflare-api-key-secret
+              key: api-key
