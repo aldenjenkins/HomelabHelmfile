@@ -1,0 +1,35 @@
+environments:
+  default:
+    values:
+      - "../values.yaml.gotmpl"
+---
+
+releases:
+  - name: birthday-reminders
+    chart: charts/birthday-reminders
+    atomic: true
+    values:
+      - emailPass: {{ .Values.services.birthdayReminder.emailPassword }}
+        emailHost: {{ .Values.email.host }}
+        emailFrom: {{ .Values.services.birthdayReminder.emailUsername }}
+        emailTo: {{ .Values.email.emailTo }}
+        birthdaysCSV: {{ .Values.services.birthdayReminder.birthdayCSV }}
+
+  - name: dictionary-digest
+    chart: charts/dictionary-digest
+    atomic: true
+    values:
+      - emailPass: {{ .Values.services.dictionaryDigest.emailPassword }}
+        emailHost: {{ .Values.email.host }}
+        emailFrom: {{ .Values.services.dictionaryDigest.emailUsername }}
+        emailTo: {{ .Values.email.emailTo }}
+
+  - name: dream-reminder
+    chart: charts/dream-reminder
+    atomic: true
+    values:
+      - emailPass: {{ .Values.services.dreamReminder.emailPassword }}
+        emailHost: {{ .Values.email.host }}
+        emailFrom: {{ .Values.services.dreamReminder.emailUsername }}
+        emailTo: {{ .Values.email.emailTo }}
+        dreamReminderMD: {{ .Values.services.dreamReminder.paintedPictureMD }}

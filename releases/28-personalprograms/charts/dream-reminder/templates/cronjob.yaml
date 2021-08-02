@@ -1,0 +1,26 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: dream-reminder
+spec:
+  schedule: "8 8 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: dream-reminder
+            image: quay.io/jenks/daily-dream-reminder
+            imagePullPolicy: IfNotPresent
+            env:
+              - name: EMAIL_TO
+                value: {{ .Values.emailTo }}
+              - name: SMTP_HOST
+                value: {{ .Values.emailHost }}
+              - name: EMAIL_FROM
+                value: {{ .Values.emailFrom }}
+              - name: SMTP_PASS
+                value: {{ .Values.emailPass }}
+              - name: THREE_YEAR_PAINTED_PICTURE
+                value: {{ .Values.dreamReminderMD | b64dec | quote }}
+          restartPolicy: OnFailure

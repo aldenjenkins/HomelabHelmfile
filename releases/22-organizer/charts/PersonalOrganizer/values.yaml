@@ -2,3 +2,7 @@ dbHost: "127.0.0.1"
 dbPassword: example
 dnsName: example.com
 secretName: exampleexampleexample
+emailTo: example@example.com
+emailFrom: example@example.com
+emailHost: examplehost
+emailPass: examplepass

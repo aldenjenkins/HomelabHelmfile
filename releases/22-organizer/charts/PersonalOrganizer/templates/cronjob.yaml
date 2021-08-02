@@ -1,0 +1,33 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: latest-journal-entries
+spec:
+  schedule: "0 8 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: latest-journal-entries
+            image: quay.io/jenks/organizer
+            imagePullPolicy: IfNotPresent
+            command: ["python"]
+            # Num words to send in the digest
+            args: ["manage.py", "email_latest_journal_entries"]
+            env:
+              - name: DB_PASSWORD
+                value: {{ .Values.dbPassword }}
+              - name: DB_HOST
+                value: {{ .Values.dbHost }}
+              - name: SECRET_KEY
+                value: {{ .Values.secretKey }}
+              - name: EMAIL_TO
+                value: {{ .Values.emailTo }}
+              - name: EMAIL_HOST
+                value: {{ .Values.emailHost }}
+              - name: EMAIL_HOST_USER
+                value: {{ .Values.emailFrom }}
+              - name: EMAIL_HOST_PASSWORD
+                value: {{ .Values.emailPass }}
+          restartPolicy: OnFailure

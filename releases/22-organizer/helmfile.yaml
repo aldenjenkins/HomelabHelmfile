@@ -15,6 +15,10 @@ releases:
       dbPassword: {{ .Values.services.organizer.dbPassword }}
       dnsName: {{ .Values.tls.cert.dnsNames.organizer }}
       secretKey: {{ .Values.services.organizer.secretKey }}
+      emailTo: {{ .Values.email.emailTo }}
+      emailFrom: {{ .Values.services.organizer.emailUsername }}
+      emailHost: {{ .Values.email.host }}
+      emailPass: {{ .Values.services.organizer.emailPassword }}
   - name: habit-accountability
     labels:
       type: habit-accountability

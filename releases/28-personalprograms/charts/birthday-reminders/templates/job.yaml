@@ -1,0 +1,26 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: birthday-reminder
+spec:
+  schedule: "9 8 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: birthday-reminder
+            image: quay.io/jenks/daily-birthday-reminders
+            imagePullPolicy: IfNotPresent
+            env:
+              - name: EMAIL_TO
+                value: {{ .Values.emailTo }}
+              - name: EMAIL_HOST
+                value: {{ .Values.emailHost }}
+              - name: EMAIL_HOST_USER
+                value: {{ .Values.emailFrom }}
+              - name: EMAIL_HOST_PASSWORD
+                value: {{ .Values.emailPass }}
+              - name: BIRTHDAYS_CSV
+                value: {{ .Values.birthdaysCSV }}
+          restartPolicy: OnFailure

@@ -3,9 +3,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: kanboard
-  annotations:
-    fluxcd.io/automated: 'true'
-    fluxcd.io/tag.kanboard: 'regex:^2\.[0-9\.]+-ls[0-9]+$'
 spec:
   replicas: 1
   selector:

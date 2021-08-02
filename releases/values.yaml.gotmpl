@@ -2,6 +2,7 @@ rootDomain: {{ requiredEnv "ROOT_DOMAIN" }}
 timeZone: {{ requiredEnv "KUBE_TIMEZONE" }}
 email:
   host: {{ requiredEnv "EMAIL_HOST" }}
+  emailTo: {{ requiredEnv "EMAIL_TO" }}
 network:
   nfs:
     host: "{{ requiredEnv "NFS_HOST" }}"
@@ -31,6 +32,8 @@ services:
   organizer:
     dbPassword: "{{ requiredEnv "ORGANIZER_DB_PASSWORD" }}"
     secretKey: "{{ requiredEnv "ORGANIZER_SECRET_KEY" }}"
+    emailUsername: "{{ requiredEnv "ORGANIZER_EMAIL_USERNAME" }}"
+    emailPassword: "{{ requiredEnv "ORGANIZER_EMAIL_PASSWORD" }}"
   habit-accountability:
     dbPassword: "{{ requiredEnv "HABITS_DB_PASSWORD" }}"
     secretKey: "{{ requiredEnv "HABITS_SECRET_KEY" }}"
@@ -60,6 +63,17 @@ services:
     dbPassword: {{ requiredEnv "NETBOX_DB_PASSWORD" }}
     superuserPassword: {{ requiredEnv "NETBOX_SUPERUSER_PASSWORD" }}
     superuserApiToken: {{ requiredEnv "NETBOX_SUPERUSER_APITOKEN" }}
+  birthdayReminder:
+    emailUsername: {{ requiredEnv "BIRTHDAYS_EMAIL_USERNAME" }}
+    emailPassword: {{ requiredEnv "BIRTHDAYS_EMAIL_PASSWORD" }}
+    birthdayCSV: {{ requiredEnv "BIRTHDAYS_CSV" }}
+  dreamReminder:
+    emailUsername: {{ requiredEnv "DREAM_REMINDER_EMAIL_USERNAME" }}
+    emailPassword: {{ requiredEnv "DREAM_REMINDER_EMAIL_PASSWORD" }}
+    paintedPictureMD: {{ requiredEnv "THREE_YEAR_PAINTED_PICTURE" | b64enc }}
+  dictionaryDigest:
+    emailUsername: {{ requiredEnv "DICTIONARY_DIGEST_EMAIL_USERNAME" }}
+    emailPassword: {{ requiredEnv "DICTIONARY_DIGEST_EMAIL_PASSWORD" }}
 tls:
   acme:
     email: "{{ requiredEnv "LETSENCRYPT_EMAIL" }}"

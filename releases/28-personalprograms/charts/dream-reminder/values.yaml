@@ -1,0 +1,5 @@
+emailPass: password
+emailHost: hostname
+emailFrom: username@example.com
+emailTo: example@example.com
+dreamReminderMD: markdowntext

@@ -1,0 +1,27 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: dictionary-digest
+spec:
+  schedule: "3 8 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: dictionary-digest
+            image: quay.io/jenks/daily-dictionary-digest
+            imagePullPolicy: IfNotPresent
+            command: ["python3"]
+            # Num words to send in the digest
+            args: ["send_digest.py", "5"]
+            env:
+              - name: EMAIL_TO
+                value: {{ .Values.emailTo }}
+              - name: SMTP_HOST
+                value: {{ .Values.emailHost }}
+              - name: EMAIL_FROM
+                value: {{ .Values.emailFrom }}
+              - name: SMTP_PASS
+                value: {{ .Values.emailPass }}
+          restartPolicy: OnFailure

@@ -23,6 +23,7 @@ helmfiles:
   - "releases/25-matrix/helmfile.yaml"
   - "releases/26-bookstack/helmfile.yaml"
   - "releases/27-netbox/helmfile.yaml"
+  - "releases/28-personalprograms/helmfile.yaml"
 
 environments:
   default: {}
